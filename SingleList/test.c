@@ -58,7 +58,7 @@ void test3()
 	SLPrint(head);
 
 	SLNode* ret = SLFind(head, 3);
-	if (!(ret))
+	if (!ret)
 	{
 		printf("√ª’“µΩ\n");
 	}

@@ -60,9 +60,33 @@ void test3()
 }
 
 //打印出栈顺序，是否符合后进先出
-void test4(st)
+void test4()
 {
-	
+	ST st;
+
+	StackInit(&st);
+	StackPush(&st, 1);
+	StackPush(&st, 2);
+	StackPush(&st, 3);
+	StackPush(&st, 4);
+
+	printf("%d ", StackTop(&st));
+	StackPop(&st);
+	printf("%d ", StackTop(&st));
+	StackPop(&st);
+
+	StackPush(&st, 5);
+
+
+	while (!StackEmpty(&st))
+	{
+		printf("%d ", StackTop(&st));
+		StackPop(&st);
+	}
+
+	//预计输出为：4 3 5 2 1
+
+	//实际输出：4 3 5 2 1
 }
 
 int main(void)

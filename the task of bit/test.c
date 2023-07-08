@@ -36,6 +36,8 @@ int main(void)
 	return 0;
 }
 
+
+//改良一：malloc开辟二维数组
 void InitArr(int** parr, int row, int col)
 {
 	for (int i = 0; i < row; i++)
@@ -59,6 +61,23 @@ PrintArr(int** parr, int row, int col)
 	}
 }
 
+
+//改进二：两个循环简化成一个
+int findnum(int** parr, int row, int col, int target)
+{
+	int i = row - 1, j = 0;
+	while (i >= 0 && j < col)
+	{
+		if (parr[i][j] < target)
+			j++;
+		else if (parr[i][j] > target)
+			i--;
+		else
+			return 1;
+	}
+	return 0;
+}
+
 int main(void)
 {
 	int row = 0, col = 0;		//数字矩阵的行、列
@@ -73,26 +92,11 @@ int main(void)
 	InitArr(parr, row, col);
 	//PrintArr(parr, row, col);
 
-	for(int i = row-1; i >= 0; i--)
-	{
-		flag = 0;
-		if (parr[i][0] > target)
-		{
-			continue;
-		}
-		else
-		{
-			for (int j = 0; j < col; j++)
-				if (parr[i][j] == target)
-					flag = 1;
-					
-		}
-		if (flag)
-		{
-			printf("找到了\n");
-			break;
-		}
-	}
+	if (findnum(parr, row, col, target))
+		printf("找到了\n");
+	else
+		printf("没找到\n");
+
 	return 0;
 }
 
@@ -127,6 +131,13 @@ char* levorotation(char str[], int k)
 		str[j-1] = tmp;//循环结束后 j = len
 	}
 	return str;
+}
+
+
+//改进：穷举法——>三步反转
+char* levorotation(char str[], int k)
+{
+
 }
 
 int main(void)
@@ -187,6 +198,175 @@ int main(void)
 
 	int ret = isLevorotation(s1, s2);
 	ret == 1 ? printf("yes\n") : printf("no\n");
+
+	return 0;
+}
+
+
+
+/*qsort使用练习
+作业内容
+练习使用库函数，qsort排序各种类型的数据*/
+/*库函数排序各种数据*/
+
+
+//打印数组数据(整型)
+void printArr(int arr[], int size)
+{
+	int i = 0;
+	for (i = 0; i < size; i++)
+	{
+		printf("%d ", arr[i]);
+	}
+	printf("\n");
+}
+
+
+//打印数组数据(浮点型)
+void printArr_f(double arr[], int size)
+{
+	int i = 0;
+	for (i = 0; i < size; i++)
+	{
+		printf("%.1lf ", arr[i]);
+	}
+	printf("\n");
+}
+
+
+//排序整型数据
+int cmp_int(const void* p1, const void* p2)
+{
+	return *((int*)p1) - *((int*)p2);
+}
+
+void test_int()
+{
+	int arr[] = { 7,8,6,5,0,4,9,3,1,2 };
+	int size = sizeof(arr) / sizeof(arr[0]);
+
+	printArr(arr, size);
+	qsort(arr, size, sizeof(int), cmp_int);
+	printArr(arr, size);
+
+}
+
+
+//排序字符型数据
+int cmp_char(const void* p1, const void* p2)
+{
+	return *((char*)p1) - *((char*)p2);     //字符数组内字符排序 VS 结构体的字符串排序
+}
+
+void test_char()
+{
+	char arr[20] = { "hello bit" };
+	int len = (int)strlen(arr);
+
+	printf("%s\n", arr);
+	qsort(arr, len, sizeof(char), cmp_char);
+	printf("%s\n", arr);
+}
+
+
+//排序浮点数数据
+int cmp_double(const void* p1, const void* p2)
+{
+	return *((double*)p1) > *((double*)p2) ? 1 : -1;
+}
+
+void test_double()
+{
+	double arr[] = { 1.1, 2.2, 3.3, 6.6, 7.7, 4.4, 5.5, 8.8, 9.9, 0.0 };
+	int size = sizeof(arr) / sizeof(arr[0]);
+
+	printArr_f(arr, size);
+	qsort(arr, size, sizeof(double), cmp_double);
+	printArr_f(arr, size);
+}
+
+
+//排序结构体数据(侧重字符串排序)
+typedef struct peoInfo
+{
+	char name[20];
+	int age;
+}peoInfo;
+
+int cmp_by_name(const void* p1, const void* p2)
+{
+	return strcmp(((char*)p1), ((char*)p2));
+}
+
+void test_struct()
+{
+	peoInfo arr[] = { { "zhangsan", 15 }, {"lisi", 56}, {"wangwu", 1} };
+	int size = sizeof(arr) / sizeof(arr[0]);
+
+	printf("%s %s %s\n", arr[0].name, arr[1].name, arr[2].name);
+	qsort(arr, size, sizeof(arr[0]), cmp_by_name);
+	printf("%s %s %s\n", arr[0].name, arr[1].name, arr[2].name);
+}
+
+int main(void)
+{
+	test_int();
+	test_char();
+	test_double();
+	test_struct();
+
+	return 0;
+}
+
+
+
+/*qsort模拟实现
+
+作业内容
+模仿qsort的功能实现一个通用的冒泡排序*/
+//比较整型数据（用户实现）
+int cmp_int(const void* p1, const void* p2)
+{
+	return *(int*)p1 - *(int*)p2;
+}
+
+//内部交换（既定）
+void swap(char* p1, char* p2, int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		char tmp = p1[i];
+		p1[i] = p2[i];
+		p2[i] = tmp;
+	}
+}
+
+//冒泡排序（既定）
+void BubbleSort(void* base, int num, int size, int (*cmp)(const void* p1, const void* p2))
+{
+	int i = 0;
+	for (i = 0; i < num - 1; i++)
+	{
+		int j = 0;
+		for (j = 0; j < num - 1 - i; j++)
+		{
+			if (cmp((char*)base + (j)*size, (char*)base + (j + 1) * size) > 0)
+				swap((char*)base + (j)*size, (char*)base + (j + 1) * size, size);
+		}
+	}
+}
+
+int main(void)
+{
+	int arr[] = { 7,6,5,3,1,0,9,8,2,4 };
+	int len = sizeof(arr) / sizeof(arr[0]);
+
+	BubbleSort(arr, len, sizeof(arr[0]), cmp_int);
+
+	for (int i = 0; i < len; i++)
+	{
+		printf("%d ", arr[i]);
+	}
 
 	return 0;
 }
